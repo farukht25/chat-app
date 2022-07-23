@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import Button from '@mui/material/Button';
 import './App.css';
+import React, { Component, useState } from "react";
+import { AuthContextProvider } from './contexts/AuthContext';
+import Header from './components/Header'
+import Chat from './components/Chat';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/material/styles';
+import ChatList from './components/ChatList';
+import userEvent from '@testing-library/user-event';
+import {UserAuth} from './contexts/AuthContext'
+
 
 function App() {
+  const {user} = UserAuth();
+  const[currentChatUser,setCurrentChatUser]=useState('')
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Header />
+        {user?
+        <div className='container'>
+          <div className="chatList"><ChatList setCurrentChatUser={setCurrentChatUser}/></div>
+          <div className="currentChat"><Chat user={user} currentChatUser={currentChatUser}/></div>
+        </div>
+        :<p>loged out</p>}
     </div>
   );
 }

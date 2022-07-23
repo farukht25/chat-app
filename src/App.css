@@ -1,38 +1,142 @@
-.App {
-  text-align: center;
-}
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App{
+  width: 100%;
+  height: 100%;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header{
+  background-color: lightgrey;
+  min-height: 100px;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 2%;;
+  padding-right: 2%;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* html, body {
+	height: 100%;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+} */
+.header__logo{
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+}
+.container{
+  display: flex;
+  flex-direction: row;
+  height: 86vh;
 }
 
-.App-link {
-  color: #61dafb;
+.chatList{
+background-color: pink;
+flex:1;
+display:flex;
+flex-direction: column;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.currentChat{
+
+flex:3;
+display: flex;
+flex-direction: column;
+}
+
+.checkListItem{
+  padding: 2%;
+  border: 1px solid #e5e5ea;
+height: 80px;
+display: flex;
+flex-direction: row;
+margin-bottom: 5px;
+}
+
+.checkListItem__name{
+  margin: 10px;
+}
+
+
+
+.chat__meassages{
+  flex:6;
+
+  background-color: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  font-family: "SanFrancisco";
+  font-size: 1.25rem;
+  margin: 0 auto 1rem;
+  width: 800px;
+  padding: 0.5rem 1.5rem;
+  
+
+
+  
+}
+
+.chat__message__blurb{
+  border: 1px solid black;
+  background-color: rgb(38, 93, 151);
+  margin: 10px;
+}
+
+.chat__form {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+  justify-content: space-around;
+  background-color: aliceblue;
+  height: 50px;
+
+}
+
+.chat__form_input{
+flex: 9;
+display: flex;
+justify-content: center;
+align-items: center;
+
+}
+
+.chat__form__button{
+  flex :1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   }
-  to {
-    transform: rotate(360deg);
-  }
+  .chat__form__button button{
+    border: none;
+    }
+
+.chat__form_input input{
+  height: 70%;
+  width: 90%;
+  border-radius:  8px; 
+  border: 1px solid #e5e5ea;
+  background-color: aliceblue;
+}
+
+
+.chat__meassages p {
+  border-radius: 1.15rem;
+  line-height: 1.25;
+  max-width: 75%;
+  padding: 0.5rem .875rem;
+  position: relative;
+  word-wrap: break-word;
+}
+
+p.from-me {
+  align-self: flex-end;
+  background-color: #248bf5;
+  color: #fff; 
+}
+
+p.from-them {
+  align-items: flex-start;
+  background-color: #e5e5ea;
+  color: #000;
 }
