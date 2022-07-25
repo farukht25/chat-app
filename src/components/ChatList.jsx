@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { query, collection, onSnapshot, orderBy, Timestamp, where } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import { query, collection, onSnapshot} from 'firebase/firestore';
+import {  db } from '../firebase';
 import { UserAuth } from '../contexts/AuthContext'
 import Avatar from '@mui/material/Avatar';
 
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
 
-function ChatList({setCurrentChatUser}) {
+function ChatList({setCurrentChatUser,currentChatUser}) {
     
 
     const { user } = UserAuth();
@@ -32,7 +27,8 @@ function ChatList({setCurrentChatUser}) {
             
 
                 {chatList.filter(chat=>chat.email !== user.email).map(chat => {
-                    return <a onClick={e=>setCurrentChatUser(chat.email)}><div  className='checkListItem'>
+                    return <a key={chat.id} onClick={e=>setCurrentChatUser(chat.email)}><div  
+                    className={chat.email===currentChatUser?'checkListItem currentChatUser':'checkListItem'}>
                         <Avatar alt={chat.displayName} src={chat.photoURL} />
                         <div className='checkListItem__name'>{chat.displayName}</div>
 
