@@ -13,7 +13,7 @@ function Header() {
       <div className='header__logo'>Chat App</div>
       {user?
         // <Button  onClick={logOut}>Log Out</Button>
-        <IconButton aria-label="delete"  color="secondary"   onClick={logOut}>
+        <IconButton aria-label="logout"  color="secondary"   onClick={logOut}>
         <LogoutIcon  variant='secondary' />
       </IconButton>
         :<Button onClick={googleSignIn}>Sign Up/Sign In</Button>

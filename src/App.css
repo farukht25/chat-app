@@ -51,6 +51,14 @@ flex-direction: column;
 background-color: #393d41;
 
 }
+.logedOutScreen{
+  background-color: #393d41;
+  flex:3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
 
 .checkListItem{
   padding: 2%;
@@ -61,6 +69,7 @@ display: flex;
 flex-direction: row;
 margin: 5px;
 border-radius: 10px;
+cursor: pointer;
 }
 
 .checkListItem__name{
@@ -154,7 +163,7 @@ background-color: #43474b;
 
 
 .chat__meassages p {
-  border-radius: 1.15rem;
+  
   line-height: 1.25;
   max-width: 75%;
   padding: 0.5rem .875rem;
@@ -163,17 +172,24 @@ background-color: #43474b;
   
 }
 
+
 p.from-me {
   align-self: flex-end;
   background-color: #43474b;
   color: #fff; 
+  
+ border-radius: 0.5rem;
+  
 }
 
 p.from-them {
   align-items: flex-start;
-  background-color: #43474b;
-  color: #fff;
+  color: #43474b;
+  background-color: #fff;
   width: fit-content;
+  
+ border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+  
 }
 
 .chat__meassages::-webkit-scrollbar {
@@ -193,4 +209,12 @@ p.from-them {
   border: 3px solid 2C3639;  
 }
 
+.logedOut{
+  background-color: #25292d;
+}
+
+.chat__menu__placeholder {
+  display: inline-block;
+  width: 12px;
+} 
 

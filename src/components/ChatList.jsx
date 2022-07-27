@@ -21,6 +21,13 @@ function ChatList({setCurrentChatUser,currentChatUser}) {
         })
         return () => unsub()
     }, [])
+    // addToChatList=(e)=>{
+    //     e.preventDefault();
+
+    //     addDoc(collection(db, `chatsList/${user.email}/message`), {
+    //         email:''
+    //     })
+    // }
     return (
         <>
 
