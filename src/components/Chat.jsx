@@ -1,10 +1,11 @@
-import { query, collection, onSnapshot, orderBy, addDoc, updateDoc ,setDoc,getDoc} from 'firebase/firestore';
+import { query, collection, onSnapshot, orderBy, addDoc, updateDoc, setDoc, getDoc, doc, update, where } from 'firebase/firestore';
 import React, { useEffect, useState, useRef } from 'react'
 import { db } from '../firebase';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { serverTimestamp } from "firebase/firestore";
 import Button from '@mui/material/Button';
 import HoverMenu from '../components/HoverMenu'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function Chat({ user, currentChatUser }) {
     const [messages, setMessages] = useState([]);
@@ -19,9 +20,8 @@ function Chat({ user, currentChatUser }) {
             const unsub = onSnapshot(q, (snapshot) => {
                 let allMessages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
                 let newMessages = allMessages.filter(mes => {
-                    if (mes.to === currentChatUser || mes.from === currentChatUser)
-                        return true;
-                    else return false
+                    return (mes.to === currentChatUser || mes.from === currentChatUser)
+
                 })
                 setMessages(prev => newMessages)
                 dummy.current.scrollIntoView({ behavior: 'smooth' });
@@ -36,53 +36,77 @@ function Chat({ user, currentChatUser }) {
     }, [user, currentChatUser])
 
 
-    const deleteMessage = (messageId) => {
+    const deleteMessage = async (messageId) => {
         try {
-            console.log(`chats/${user.email}/messages/${messageId}`)
-           console.log( getDoc(collection(db, `chats/${user.email}/messages/${messageId}`)))
-            // const taskQuery = doc(collection(db, `chats/${user.email}/messages/${messageId}`))
-            // const taskDocs = await getDocs(taskQuery)
-            // taskDocs.forEach((taskDoc) => {
-            //     await setDoc(taskDoc.ref, {
-            //         name: 'prueba',
-            //         uid: currentUser,
-            //         projectId: newDocRef.id
-            //     })
-            // })
+            const docSnap = await getDoc(doc(db, `chats/${user.email}/messages`, messageId));
+            const copyMessageId = docSnap._document.data.value.mapValue.fields.copyId.stringValue
+            await Promise.all([
+                updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { isDeleted: true }),
+                updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { isDeleted: true })
+            ])
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    const editMessage =  async(messageId,newMessage) => {
+        try {
+            console.log('edit func'+messageId)
+
+            const docSnap = await getDoc(doc(db, `chats/${user.email}/messages`, messageId));
+            const copyMessageId = docSnap._document.data.value.mapValue.fields.copyId.stringValue
+            await Promise.all([
+                updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { text: newMessage }),
+                updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { text: newMessage })
+            ])
+            
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    const copyReference = async (receiverCopy, senderCopy) => {
+        try {
+            await Promise.all([
+                updateDoc(doc(db, `chats/${user.email}/messages`, senderCopy), { copyId: receiverCopy }),
+                updateDoc(doc(db, `chats/${currentChatUser}/messages`, receiverCopy), { copyId: senderCopy })
+            ])
+
         }
         catch (error) {
             console.log(error)
         }
     }
 
-    const sendMessage = (e) => {
+    const sendMessage = async (e) => {
         e.preventDefault();
-        // sender
-        if (message) {
-            dummy.current.scrollIntoView({ behaviour: 'smooth' })
+        const messageLocal = message
+        setMessage('');
+        try {
+            if (messageLocal) {
+                dummy.current.scrollIntoView({ behaviour: 'smooth' })
+                const [senderCopy, receiverCopy] = await Promise.all([
+                    addDoc(collection(db, `chats/${user.email}/messages`), {
+                        to: currentChatUser,
+                        from: user.email,
+                        timestamp: serverTimestamp(),
+                        text: messageLocal,
+                        isDeleted: false
+                    }),
+                    addDoc(collection(db, `chats/${currentChatUser}/messages`), {
+                        from: user.email,
+                        to: currentChatUser,
+                        timestamp: serverTimestamp(),
+                        text: messageLocal,
+                        isDeleted: false
+                    })])
 
-            addDoc(collection(db, `chats/${user.email}/messages`), {
-                to: currentChatUser,
-                from: user.email,
-                timestamp: serverTimestamp(),
-                text: message,
-                isDeleted: false
-            })
-            console.log('enered 1')
+                copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3])
 
-            // receiver
-            addDoc(collection(db, `chats/${currentChatUser}/messages`), {
-                from: user.email,
-                to: currentChatUser,
-                timestamp: serverTimestamp(),
-                text: message,
-                isDeleted: false
-            })
-            console.log('enered2')
-
-            setMessage('');
-            dummy.current.scrollIntoView({ behaviour: 'smooth' })
+                dummy.current.scrollIntoView({ behaviour: 'smooth' })
+            }
         }
+        catch (error) { console.log(error) }
     }
 
 
@@ -94,12 +118,14 @@ function Chat({ user, currentChatUser }) {
                 {
                     messages.map(m => {
                         return (<>
-                            <p key={m.id}
+                            {m.isDeleted ? <p className={m.from === user.email ? "from-me deleted" : "from-them deleted"}>Message Deleted</p> : <p key={m.id}
                                 onMouseEnter={() => setHoweredOnmessageId(m.id)}
                                 onMouseLeave={() => setHoweredOnmessageId(null)}
                                 className={m.from === user.email ? "from-me" : "from-them"}> {m.text}
-                                {(m.from === user.email && m.id === howeredOnmessageId) ? <HoverMenu deleteMessage={deleteMessage} messageId={m.id} /> : <span className='chat__menu__placeholder'> </span>}
-                            </p>
+                                {(m.from === user.email && m.id === howeredOnmessageId) ? 
+                                <HoverMenu editMessage={editMessage} message={m} deleteMessage={deleteMessage} messageId={m.id}/> :
+                                 <span className='chat__menu__placeholder'> </span>}
+                            </p>}
 
                         </>
                         )

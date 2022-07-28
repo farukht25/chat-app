@@ -3,8 +3,9 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import EditChatMessageModal from './EditChatMessageModal'
 
-export default function BasicMenu({deleteMessage, messageId}) {
+export default function BasicMenu({deleteMessage, messageId,message,editMessage}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -14,10 +15,11 @@ export default function BasicMenu({deleteMessage, messageId}) {
     setAnchorEl(null);
   };
   const handleDelete=()=>{
-    handleClose();
-    console.log('deleting '+messageId)
     deleteMessage(messageId);
+    handleClose();
+    
   }
+  
   return (
     <>
       <span className='chat__bubble__options'
@@ -38,7 +40,7 @@ export default function BasicMenu({deleteMessage, messageId}) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <EditChatMessageModal handleMenuClose={handleClose} message={message} editMessage={editMessage} ><MenuItem >Edit</MenuItem></EditChatMessageModal>
         <MenuItem onClick={handleDelete}>Detete</MenuItem>
       </Menu>
     </>

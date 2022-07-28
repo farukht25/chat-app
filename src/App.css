@@ -218,3 +218,14 @@ p.from-them {
   width: 12px;
 } 
 
+p.deleted{
+  background-color: #9c27b0;
+  color: white;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
