@@ -1,0 +1,9 @@
+add edit label
+
+create collapsable div for mobile version
+
+focsu on text when for edit 
+
+inline edit
+
+maybe skeleton

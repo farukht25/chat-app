@@ -1,11 +1,11 @@
-import { query, collection, onSnapshot, orderBy, addDoc, updateDoc, setDoc, getDoc, doc, update, where } from 'firebase/firestore';
+import { query, collection, onSnapshot, orderBy, addDoc, updateDoc, getDoc, doc} from 'firebase/firestore';
 import React, { useEffect, useState, useRef } from 'react'
 import { db } from '../firebase';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { serverTimestamp } from "firebase/firestore";
 import Button from '@mui/material/Button';
-import HoverMenu from '../components/HoverMenu'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
+import ChatMessage from './ChatMessage';
 
 function Chat({ user, currentChatUser }) {
     const [messages, setMessages] = useState([]);
@@ -13,8 +13,9 @@ function Chat({ user, currentChatUser }) {
     const [howeredOnmessageId, setHoweredOnmessageId] = useState(null);
     const dummy = useRef()
     useEffect(() => {
+        
+        
         if (user && Object.keys(user).length !== 0 && currentChatUser) {
-
 
             const q = query(collection(db, "chats", user.email, "messages"), orderBy('timestamp'));
             const unsub = onSnapshot(q, (snapshot) => {
@@ -36,14 +37,21 @@ function Chat({ user, currentChatUser }) {
     }, [user, currentChatUser])
 
 
-    const deleteMessage = async (messageId) => {
+    const deleteMessage = async (messageId,justMe) => {
         try {
             const docSnap = await getDoc(doc(db, `chats/${user.email}/messages`, messageId));
             const copyMessageId = docSnap._document.data.value.mapValue.fields.copyId.stringValue
+            if(justMe)
+            {
+                updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { isDeleted: true })
+            }
+            else{
             await Promise.all([
                 updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { isDeleted: true }),
                 updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { isDeleted: true })
-            ])
+            ])}
+        
+            setHoweredOnmessageId(null)
         }
         catch (error) {
             console.log(error)
@@ -59,7 +67,7 @@ function Chat({ user, currentChatUser }) {
                 updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { text: newMessage }),
                 updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { text: newMessage })
             ])
-            
+            setHoweredOnmessageId(null)
         }
         catch (error) {
             console.log(error)
@@ -110,25 +118,15 @@ function Chat({ user, currentChatUser }) {
     }
 
 
-
     return ((user && Object.keys(user).length !== 0 && currentChatUser) ? (
         <>
             <div className="chat__meassages">
 
                 {
                     messages.map(m => {
-                        return (<>
-                            {m.isDeleted ? <p className={m.from === user.email ? "from-me deleted" : "from-them deleted"}>Message Deleted</p> : <p key={m.id}
-                                onMouseEnter={() => setHoweredOnmessageId(m.id)}
-                                onMouseLeave={() => setHoweredOnmessageId(null)}
-                                className={m.from === user.email ? "from-me" : "from-them"}> {m.text}
-                                {(m.from === user.email && m.id === howeredOnmessageId) ? 
-                                <HoverMenu editMessage={editMessage} message={m} deleteMessage={deleteMessage} messageId={m.id}/> :
-                                 <span className='chat__menu__placeholder'> </span>}
-                            </p>}
-
-                        </>
-                        )
+                        return <ChatMessage m={m} user={user} setHoweredOnmessageId={setHoweredOnmessageId}
+                             howeredOnmessageId={howeredOnmessageId} editMessage={editMessage} deleteMessage={deleteMessage}/>
+                        
                     })
                 }
                 <span ref={dummy}></span>
@@ -156,3 +154,18 @@ function Chat({ user, currentChatUser }) {
 }
 
 export default Chat
+
+// function ChatBlurb(m, user, setHoweredOnmessageId, howeredOnmessageId, editMessage, deleteMessage) {
+//     return <>
+//         {m.isDeleted ? <p key={m.id} className={m.from === user.email ? "from-me deleted" : "from-them deleted"}>
+//             <DoNotDisturbAltIcon sx={{ fontSize: 15 }} />Message Deleted</p> : <p key={m.id}
+//                 onMouseEnter={() => setHoweredOnmessageId(m.id)}
+//                 onMouseLeave={() => setHoweredOnmessageId(null)}
+//                 className={m.from === user.email ? "from-me" : "from-them"}> {m.text}
+//             {(m.id === howeredOnmessageId) ?
+//                 <HoverMenu key={m.id} isUserMessage={(user.email !== m.to)} editMessage={editMessage} message={m} deleteMessage={deleteMessage} messageId={m.id} /> :
+//                 <span key={m.id} className='chat__menu__placeholder'> </span>}
+//         </p>}
+
+//     </>;
+// }

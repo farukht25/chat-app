@@ -4,7 +4,6 @@ import Header from './components/Header'
 import Chat from './components/Chat';
 import ChatList from './components/ChatList';
 import { UserAuth } from './contexts/AuthContext'
-import Paper from '@mui/material/Paper';
 
 
 function App() {

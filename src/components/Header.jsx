@@ -1,7 +1,6 @@
 import React from 'react'
 import {UserAuth} from '../contexts/AuthContext'
 import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 function Header() {

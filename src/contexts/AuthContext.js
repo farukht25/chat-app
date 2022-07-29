@@ -20,7 +20,6 @@ export const AuthContextProvider = ({ children }) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
     .then((result)=>{
-    console.log(JSON.stringify(result))
     const { isNewUser } = getAdditionalUserInfo(result)
     if(isNewUser) addDoc(collection(db,'users'),{email:result.user.email,uid:result.user.uid, timestamp: serverTimestamp(),displayName:result.user.displayName,
       photoURL:result.user.photoURL})
@@ -34,10 +33,6 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      
-      
-
-      console.log('User', currentUser)
     })
     return () => {
       unsubscribe();

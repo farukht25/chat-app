@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { query, collection, onSnapshot} from 'firebase/firestore';
-import {  db } from '../firebase';
+import { query, collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 import { UserAuth } from '../contexts/AuthContext'
 import Avatar from '@mui/material/Avatar';
 
 
-function ChatList({setCurrentChatUser,currentChatUser}) {
-    
+function ChatList({ setCurrentChatUser, currentChatUser }) {
+
 
     const { user } = UserAuth();
     const [chatList, setChatList] = useState([])
     useEffect(() => {
-        const q = query(collection(db, 'users'))
+        const getChatUserList=async ()=>{
+        try {
+            const q = query(collection(db, 'users'))
 
-        const unsub = onSnapshot(q, (snapshot) => {
-            setChatList(snapshot.docs.map(doc => (
-                { ...doc.data(), id: doc.id }
-            )
-            ))
-        })
-        return () => unsub()
+            const unsub = await onSnapshot(q, (snapshot) => {
+                setChatList(snapshot.docs.map(doc => (
+                    { ...doc.data(), id: doc.id }
+                )
+                ))
+            })
+            return () => unsub()
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    getChatUserList()
     }, [])
     // addToChatList=(e)=>{
     //     e.preventDefault();
@@ -31,18 +39,18 @@ function ChatList({setCurrentChatUser,currentChatUser}) {
     return (
         <>
 
-            
 
-                {chatList.filter(chat=>chat.email !== user.email).map(chat => {
-                    return <a key={chat.id} onClick={e=>setCurrentChatUser(chat.email)}><div  
-                    className={chat.email===currentChatUser?'checkListItem currentChatUser':'checkListItem'}>
-                        <Avatar alt={chat.displayName} src={chat.photoURL} />
-                        <div className='checkListItem__name'>{chat.displayName}</div>
 
-                        </div></a>
-                })}
+            {chatList.filter(chat => chat.email !== user.email).map(chat => {
+                return <a  key={chat.id} onClick={e => setCurrentChatUser(chat.email)}><div
+                    className={chat.email === currentChatUser ? 'checkListItem currentChatUser' : 'checkListItem'}>
+                    <Avatar alt={chat.displayName} src={chat.photoURL} />
+                    <div className='checkListItem__name'>{chat.displayName}</div>
 
-            
+                </div></a>
+            })}
+
+
 
         </>
     )
