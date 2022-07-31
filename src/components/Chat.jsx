@@ -25,8 +25,10 @@ function Chat({ user, currentChatUser }) {
 
                 })
                 setMessages(prev => newMessages)
-                dummy.current.scrollIntoView({ behavior: 'smooth' });
+
             })
+            
+            
 
 
             return () => unsub()
@@ -64,8 +66,8 @@ function Chat({ user, currentChatUser }) {
             const docSnap = await getDoc(doc(db, `chats/${user.email}/messages`, messageId));
             const copyMessageId = docSnap._document.data.value.mapValue.fields.copyId.stringValue
             await Promise.all([
-                updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { text: newMessage }),
-                updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { text: newMessage })
+                updateDoc(doc(db, `chats/${user.email}/messages`, messageId), { text: newMessage, isEdited:true }),
+                updateDoc(doc(db, `chats/${currentChatUser}/messages`, copyMessageId), { text: newMessage, isEdited:true })
             ])
             setHoweredOnmessageId(null)
         }
@@ -99,14 +101,16 @@ function Chat({ user, currentChatUser }) {
                         from: user.email,
                         timestamp: serverTimestamp(),
                         text: messageLocal,
-                        isDeleted: false
+                        isDeleted: false,
+                        isEdited:false
                     }),
                     addDoc(collection(db, `chats/${currentChatUser}/messages`), {
                         from: user.email,
                         to: currentChatUser,
                         timestamp: serverTimestamp(),
                         text: messageLocal,
-                        isDeleted: false
+                        isDeleted: false,
+                        isEdited:false
                     })])
 
                 copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3])

@@ -162,18 +162,21 @@ background-color: #43474b;
 
 
 
-.chat__meassages p {
+.chat__meassages div {
   
   line-height: 1.25;
   max-width: 75%;
   padding: 0.5rem .875rem;
   position: relative;
   word-wrap: break-word;
+  margin-top: 15px;
+  margin-bottom: 2px;
+  
   
 }
 
 
-p.from-me {
+.from-me {
   align-self: flex-end;
   background-color: #43474b;
   color: #fff; 
@@ -182,7 +185,7 @@ p.from-me {
   
 }
 
-p.from-them {
+.from-them {
   align-items: flex-start;
   color: #43474b;
   background-color: #fff;
@@ -214,11 +217,11 @@ p.from-them {
 }
 
 .chat__menu__placeholder {
-  display: inline-block;
+  display:inline-block;
   width: 15px;
 } 
 
-p.deleted{
+.deleted{
   background-color: #9c27b0;
   color: white;
 }
@@ -229,3 +232,25 @@ p.deleted{
   justify-content: center;
   align-items: center;
 }
+
+
+
+.right{
+  align-self: flex-end;
+  font-weight: lighter;
+  background-color: #393d41;
+  color: gray;
+  
+}
+.left {
+  align-items: flex-start;
+  font-weight: lighter;
+  background-color: #393d41;
+  color: gray;
+  
+}
+
+.time{
+  font-size: small;
+}
+
