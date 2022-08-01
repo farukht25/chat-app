@@ -254,3 +254,15 @@ background-color: #43474b;
   font-size: small;
 }
 
+
+.message__date{
+  background-color: #43474b;
+  color: gray;
+  height: fit-content;
+  width: fit-content;
+  font-size: small;
+  align-self: center;
+  border-radius: 10px;
+
+}
+
