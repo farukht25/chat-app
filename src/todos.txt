@@ -1,13 +1,11 @@
 
 
-create collapsable div for mobile version
 
-focsu on text when for edit 
+focsu on text when for edit --not happening
 
 
 maybe skeleton
 
 
-if date is today write today       10/1
-if date is yesterday write yesterday 9/1
-if date is  older           (8,7,6,5,4)/1 full date
+adding users mechanism------big maybe
+

@@ -2,15 +2,13 @@ import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditChatMessageModal from './EditChatMessageModal'
 import EditChatMessageDialog from './EditChatMessageDialog'
-import EditPopper from './EditPopper'
+
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red } from '@mui/material/colors';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import {createTheme } from '@mui/material/styles';
 
 export default function BasicMenu({ deleteMessage, messageId, message, editMessage, isUserMessage,setHoweredOnmessageId }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -28,11 +26,6 @@ export default function BasicMenu({ deleteMessage, messageId, message, editMessa
 
     }
 
-    const darkTheme = createTheme({
-        palette: {
-            mode: 'dark',
-        },
-    });
 
     return (
         
