@@ -8,14 +8,15 @@ import Skeleton from '@mui/material/Skeleton';
 import ChatMessage from './ChatMessage';
 import ChatHeader from './ChatHeader';
 
-function Chat({ user, currentChatUser ,width,toggle,currentChatVisible}) {
+function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [howeredOnmessageId, setHoweredOnmessageId] = useState(null);
+    const [loading, setLoading] = useState(true);
     const dummy = useRef()
     useEffect(() => {
-
-        if (user && Object.keys(user).length !== 0 && currentChatUser.email) {
+        setLoading(true)
+        if ( currentChatUser.email) {
 
 
             const q = query(collection(db, "chats", user.email, "messages"), orderBy('timestamp'));
@@ -26,9 +27,11 @@ function Chat({ user, currentChatUser ,width,toggle,currentChatVisible}) {
                 })
                 setMessages(prev => newMessages)
             })
+            setLoading(false)
             return () => unsub()
-            
+
         }
+
     }, [user, currentChatUser])
 
 
@@ -54,7 +57,6 @@ function Chat({ user, currentChatUser ,width,toggle,currentChatVisible}) {
     }
     const editMessage = async (messageId, newMessage) => {
         try {
-            console.log('edit func' + messageId)
 
             const docSnap = await getDoc(doc(db, `chats/${user.email}/messages`, messageId));
             const copyMessageId = docSnap._document.data.value.mapValue.fields.copyId.stringValue
@@ -133,32 +135,36 @@ function Chat({ user, currentChatUser ,width,toggle,currentChatVisible}) {
 
     return ((user && Object.keys(user).length !== 0 && currentChatUser.email) ? (
         <>
-            <ChatHeader currentChatUser={currentChatUser} width={width} toggle={toggle} currentChatVisible={currentChatVisible}/>
-            <div className="chat__meassages">
+            <ChatHeader currentChatUser={currentChatUser} width={width} toggle={toggle} currentChatVisible={currentChatVisible} />
+            <div className="chat__messages">
 
-                {   
-                    messages.length!==0?(
-                    messages.map((m, i, arr) => {
-                        const previousItem = arr[i - 1];
-                        var insertDate = false;
-                        if (!previousItem ||                                           //when we are on 0th message
-                            (previousItem && m.messageDate !== previousItem.messageDate))
-                            insertDate = true
+                {
+                    (loading) ? (
+                        <>
+                            {[1, 2, 1, 2].map(el => (
+                                <div className={el === 1 ? 'left' : 'right'}>
+                                    <Skeleton animation="wave" variant="text" width={100} height={70} />
+                                </div>
+                            ))}
+                        </>
+
+                    ) : (
+
+                        messages.map((m, i, arr) => {
+                            const previousItem = arr[i - 1];
+                            var insertDate = false;
+                            if (!previousItem ||                                           //when we are on 0th message
+                                (previousItem && m.messageDate !== previousItem.messageDate))
+                                insertDate = true
 
 
-                        return (<>{insertDate && (<div className='message__date'>{m.messageDate}</div>)}<ChatMessage m={m} user={user}
-                            setHoweredOnmessageId={setHoweredOnmessageId}
-                            howeredOnmessageId={howeredOnmessageId} editMessage={editMessage} deleteMessage={deleteMessage} /></>)
+                            return (<>{insertDate && (<div className='message__date'>{m.messageDate}</div>)}
+                                <ChatMessage m={m} user={user}
+                                    key={m.id}
+                                    setHoweredOnmessageId={setHoweredOnmessageId}
+                                    howeredOnmessageId={howeredOnmessageId} editMessage={editMessage} deleteMessage={deleteMessage} /></>)
 
-                    })
-                    ):(
-                    <>
-                    {[1,2,1,2].map(el=>(
-                        <div className={el===1?'left':'right'}>
-                            <Skeleton animation="wave" variant="text" width={100} height={70} />
-                        </div>
-                    ))}
-                    </>)
+                        }))
                 }
                 <span ref={dummy}></span>
             </div>

@@ -27,7 +27,9 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
                 console.log(error)
             }
         }
+        
         getChatUserList()
+        
     }, [])
 
 
@@ -36,12 +38,15 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
 
         <>
             {chatList.filter(chat => chat.email !== user.email).map(chat => {
-                return <a key={chat.id} onClick={e => setCurrentChatUser({ email: chat.email, photoURL: chat.photoURL, displayName: chat.displayName })}>
+                return <button className='styleless__button' key={chat.id} onClick={e => setCurrentChatUser({ email: chat.email, photoURL: chat.photoURL, displayName: chat.displayName })}>
                     <div className={chat.email === currentChatUser.email ? 'checkListItem currentChatUser' : 'checkListItem'}>
                         <Avatar alt={chat.displayName} src={chat.photoURL} />
+                        <div>
                         <div className='checkListItem__name'>{chat.displayName}</div>
-
-                    </div></a>
+                        <div className='checkListItem__preview'>preview...</div>
+                        </div>
+                    </div>
+                </button>
             })}
         </>) : (
         <>

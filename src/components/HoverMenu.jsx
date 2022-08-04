@@ -8,7 +8,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { red } from '@mui/material/colors';
-import {createTheme } from '@mui/material/styles';
 
 export default function BasicMenu({ deleteMessage, messageId, message, editMessage, isUserMessage,setHoweredOnmessageId }) {
     const [anchorEl, setAnchorEl] = React.useState(null);

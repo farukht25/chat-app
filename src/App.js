@@ -16,11 +16,11 @@ function App() {
   const { height, width } = windowDimensions();
   const [chatListVisible, setChatListVisible] = useState(true)
   const [currentChatVisible, setCurrentChatVisible] = useState(true)
-  console.log(width)
+ 
 
 
   useEffect(() => {
-    console.log('list:' + chatListVisible + 'current' + chatListVisible)
+
     if (width > 856) {
       setChatListVisible(true)
       setCurrentChatVisible(true)
