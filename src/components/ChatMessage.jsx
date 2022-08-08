@@ -1,9 +1,12 @@
 import React from 'react'
 import HoverMenu from '../components/HoverMenu'
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
+import DoneIcon from '@mui/icons-material/Done';
+import { green } from '@mui/material/colors';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 
-function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editMessage, deleteMessage }) {
+function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editMessage, deleteMessage,currentChatUser }) {
 
     const formatTime = () => {
         if(!m.timestamp) return ''
@@ -11,6 +14,12 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
         let end = tim.slice(-2);
         tim = tim.replace(/:[^:]+$/, "")
         return tim + ' ' + end;
+    }
+
+    const readStatus=(m)=>{
+        let seenByArray=m.seenBy;
+        if(seenByArray.includes(user.email) && seenByArray.includes(currentChatUser.email))return 'read'
+        return 'sent'
     }
 
 
@@ -39,10 +48,13 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
                     deleteMessage={deleteMessage}
                     messageId={m.id}
                     setHoweredOnmessageId={setHoweredOnmessageId} /> :
-                <span key={m.id} className='chat__menu__placeholder'></span>
+                ((readStatus(m)==='read')?<DoneAllIcon sx={{ fontSize: 15,color: green[500] }} />:
+                <DoneIcon sx={{ fontSize: 15,color: green[500] }} />)
+                
             }
         </div>
         <span className={m.from === user.email ? "right time" : "left time"}>{formatTime()}</span>
+  
 
 
     </>;

@@ -46,7 +46,7 @@ export default function FormDialog({ message, editMessage, handleMenuClose }) {
                     <DialogContent>
 
                         <TextField
-                            autoFocus='true'
+                            autoFocus={true}
                             margin="dense"
                             id="name"
                             type="text"

@@ -13,26 +13,61 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const [message, setMessage] = useState('');
     const [howeredOnmessageId, setHoweredOnmessageId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [scroll, setScroll] = useState(true);
     const dummy = useRef()
+
     useEffect(() => {
         setLoading(true)
-        if ( currentChatUser.email) {
+        if (currentChatUser.email) {
 
-
-            const q = query(collection(db, "chats", user.email, "messages"), orderBy('timestamp'));
-            const unsub = onSnapshot(q, (snapshot) => {
-                let allMessages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, messageDate: formatDMY(doc.data().timestamp) }))
-                let newMessages = allMessages.filter(mes => {
-                    return (mes.to === currentChatUser.email || mes.from === currentChatUser.email)
+            const getAllMessages = async () => {
+                const q = await query(collection(db, "chats", user.email, "messages"), orderBy('timestamp'));
+                const unsub = onSnapshot(q, (snapshot) => {
+                    let allMessages = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, messageDate: formatDMY(doc.data().timestamp) }))
+                    let newMessages = allMessages.filter(mes => {
+                        return (mes.to === currentChatUser.email || mes.from === currentChatUser.email)
+                    })
+                    setMessages(newMessages)
+                    setScroll(true)
                 })
-                setMessages(prev => newMessages)
-            })
-            setLoading(false)
-            return () => unsub()
+                setLoading(false)
+
+
+                return () => unsub()
+            }
+            getAllMessages()
+
 
         }
 
+
     }, [user, currentChatUser])
+    useEffect(() => {
+        if (dummy.current && scroll) {
+            dummy.current.scrollIntoView({ behaviour: 'smooth' })
+            setReadReceits()
+            setScroll(false)
+        }
+    }, [messages])
+
+    const  setReadReceits=()=>{
+        const unreadReceitMessages=messages.filter(message=>{
+            if((message.seenBy).includes(user.email))return false;
+            else return true
+        })
+        let promiseArray=[]
+        try{
+        unreadReceitMessages.forEach(message=>{
+            const newSeenArray=[...message.seenBy,user.email];
+            promiseArray.push(updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, message.copyId), { seenBy: newSeenArray }))
+            promiseArray.push(updateDoc(doc(db, `chats/${user.email}/messages`, message.id), { seenBy: newSeenArray })) 
+        })
+        Promise.all(promiseArray)
+    }
+    catch(err){
+        console.log(err)
+    }
+    }
 
 
     const deleteMessage = async (messageId, justMe) => {
@@ -50,6 +85,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
             }
 
             setHoweredOnmessageId(null)
+            setScroll(false)
         }
         catch (error) {
             console.log(error)
@@ -65,16 +101,20 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                 updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, copyMessageId), { text: newMessage, isEdited: true })
             ])
             setHoweredOnmessageId(null)
+            setScroll(false)
         }
         catch (error) {
             console.log(error)
         }
     }
-    const copyReference = async (receiverCopy, senderCopy) => {
+    const copyReference = async (receiverCopy, senderCopy, messageLocal) => {
         try {
             await Promise.all([
                 updateDoc(doc(db, `chats/${user.email}/messages`, senderCopy), { copyId: receiverCopy }),
-                updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, receiverCopy), { copyId: senderCopy })
+                updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, receiverCopy), { copyId: senderCopy }),
+                updateDoc(doc(db, `users`, currentChatUser.email), { [`chatMetaData.${(user.email).replace('.com', 'com')}`]: messageLocal }),
+                updateDoc(doc(db, `users`, user.email), { [`chatMetaData.${(currentChatUser.email).replace('.com', 'com')}`]: messageLocal }),
+
             ])
 
         }
@@ -89,7 +129,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
         setMessage('');
         try {
             if (messageLocal) {
-                dummy.current.scrollIntoView({ behaviour: 'smooth' })
+
                 const [senderCopy, receiverCopy] = await Promise.all([
                     addDoc(collection(db, `chats/${user.email}/messages`), {
                         to: currentChatUser.email,
@@ -97,7 +137,9 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         timestamp: serverTimestamp(),
                         text: messageLocal,
                         isDeleted: false,
-                        isEdited: false
+                        isEdited: false,
+                        seenBy: [user.email]
+
                     }),
                     addDoc(collection(db, `chats/${currentChatUser.email}/messages`), {
                         from: user.email,
@@ -105,12 +147,14 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         timestamp: serverTimestamp(),
                         text: messageLocal,
                         isDeleted: false,
-                        isEdited: false
+                        isEdited: false,
+                        seenBy: [user.email]
                     })])
 
-                copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3])
+                copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3], messageLocal)
+                setScroll(true)
+                // dummy.current.scrollIntoView({ behaviour: 'smooth' })
 
-                dummy.current.scrollIntoView({ behaviour: 'smooth' })
             }
         }
         catch (error) { console.log(error) }
@@ -159,10 +203,14 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
 
                             return (<>{insertDate && (<div className='message__date'>{m.messageDate}</div>)}
-                                <ChatMessage m={m} user={user}
+                                <ChatMessage m={m} 
+                                    user={user}
                                     key={m.id}
+                                    currentChatUser={currentChatUser}
                                     setHoweredOnmessageId={setHoweredOnmessageId}
-                                    howeredOnmessageId={howeredOnmessageId} editMessage={editMessage} deleteMessage={deleteMessage} /></>)
+                                    howeredOnmessageId={howeredOnmessageId} 
+                                    editMessage={editMessage} 
+                                    deleteMessage={deleteMessage} /></>)
 
                         }))
                 }

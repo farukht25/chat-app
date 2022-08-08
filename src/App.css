@@ -60,7 +60,7 @@
   font-weight: bold;
 }
 
-.checkListItem {
+.chatListItem {
   padding: 2%;
   border-bottom: 1px solid #2c3639;
   height: 80px;
@@ -71,17 +71,24 @@
   
 }
 
-.checkListItem__name {
+.chatListItem__name {
   margin: 10px;
 align-items: flex-start;
+display: flex;
+
   
 }
-.checkListItem__preview{
+.chatListItem__preview{
   margin: 10px;
+  align-items: flex-start;
+  display: flex;
 }
+
+
 
 .currentChatUser {
   background-color: #2f3337;
+  border-radius: 10px;
 }
 
 .chat__messages {
@@ -265,4 +272,8 @@ align-items: flex-start;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.chat__header__name{
+  margin: 10px;
 }
