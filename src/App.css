@@ -12,15 +12,9 @@
   justify-content: space-between;
   padding-left: 2%;
   padding-right: 2%;
-
   color: white;
 }
-/* html, body {
-	height: 100%;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-} */
+
 .header__logo {
   display: flex;
   flex-direction: column;
@@ -28,6 +22,7 @@
   align-items: center;
   font-weight: bolder;
 }
+
 .container {
   display: flex;
   flex-direction: row;
@@ -67,24 +62,31 @@
   display: flex;
   flex-direction: row;
   margin: 5px;
-  /* border-radius: 10px; */
-  
 }
 
 .chatListItem__name {
   margin: 10px;
-align-items: flex-start;
-display: flex;
-
-  
+  align-items: flex-start;
+  display: flex;
+  font-weight: bold;
 }
-.chatListItem__preview{
+
+.chatListItem__preview {
   margin: 10px;
   align-items: flex-start;
   display: flex;
+
 }
 
-
+.chatListItem__messageCount {
+  background-color: #9c27b0;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .currentChatUser {
   background-color: #2f3337;
@@ -109,8 +111,6 @@ display: flex;
 }
 
 .chat__message__blurb {
-  border: 1px solid black;
-  background-color: rgb(38, 93, 151);
   margin: 10px;
 }
 
@@ -169,7 +169,6 @@ display: flex;
   align-self: flex-end;
   background-color: #43474b;
   color: #fff;
-
   border-radius: 0.5rem;
 }
 
@@ -178,7 +177,6 @@ display: flex;
   color: #43474b;
   background-color: #fff;
   width: fit-content;
-
   border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
@@ -189,9 +187,6 @@ display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
-
-/* .chat__messages::-webkit-scrollbar-track {
-} */
 
 .chat__messages::-webkit-scrollbar-thumb {
   background-color: #25292d;
@@ -226,6 +221,7 @@ display: flex;
   background-color: #393d41;
   color: gray;
 }
+
 .left {
   align-items: flex-start;
   font-weight: lighter;
@@ -259,7 +255,7 @@ display: flex;
   margin-left: 10px;
 }
 
-.styleless__button {
+.stylelessButton {
   background: none;
   color: inherit;
   border: none;
@@ -268,12 +264,14 @@ display: flex;
   cursor: pointer;
   outline: inherit;
 }
-.avatar{
+.avatar {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.chat__header__name{
+.chat__header__name {
   margin: 10px;
+  font-weight: bold;
 }
+

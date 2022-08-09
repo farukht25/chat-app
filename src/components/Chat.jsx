@@ -8,13 +8,14 @@ import Skeleton from '@mui/material/Skeleton';
 import ChatMessage from './ChatMessage';
 import ChatHeader from './ChatHeader';
 
+
 function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [howeredOnmessageId, setHoweredOnmessageId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [scroll, setScroll] = useState(true);
-    const dummy = useRef()
+    const dummy = useRef();
 
     useEffect(() => {
         setLoading(true)
@@ -153,7 +154,6 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
                 copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3], messageLocal)
                 setScroll(true)
-                // dummy.current.scrollIntoView({ behaviour: 'smooth' })
 
             }
         }
@@ -175,6 +175,8 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
             ('0' + (messageTimestamp.getMonth() + 1)).slice(-2) + '/' +
             ('000' + messageTimestamp.getFullYear()).slice(-4);
     }
+
+    
 
 
     return ((user && Object.keys(user).length !== 0 && currentChatUser.email) ? (
@@ -221,13 +223,13 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
                     <div className='chat__form_input'>
 
-                        <input placeholder='Enter Message...' value={message} onChange={e => setMessage(e.target.value)} />
+                        <input placeholder='Enter Message...' type='text' value={message} onChange={e => setMessage(e.target.value)} />
                     </div>
                     <div className='chat__form__button'>
-
                         <Button type='submit' variant="dark" endIcon={<SendRoundedIcon color="dark" fontSize="large" />}>
                             Send
                         </Button>
+                        
                     </div>
 
 

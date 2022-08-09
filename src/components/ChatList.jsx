@@ -35,16 +35,11 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
 
     }, [])
     const getLastMessage = (chatItem) => {
-
-        
-            let emailWithoutPeriod = (user.email).replace('.com', 'com');
-            if(chatItem.chatMetaData[emailWithoutPeriod])
-            {
-                return (chatItem.chatMetaData[emailWithoutPeriod]).substring(0, 10)+'...'
-            }
-            return ''
-            
-        
+        let emailWithoutPeriod = (user.email).replace('.com', 'com');
+        let lastMessage = chatItem.chatMetaData[emailWithoutPeriod]
+        if (!lastMessage) return ''
+        if (lastMessage.length <= 14) return lastMessage
+        return lastMessage.substring(0, 11) + '...'
     }
 
 
@@ -54,12 +49,12 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
 
             <>
                 {chatList.filter(chat => chat.email !== user.email).map(userObj => {
-                    return <ChatListItem 
-                    userObj={userObj} 
-                    setCurrentChatUser={setCurrentChatUser} 
-                    currentChatUser={currentChatUser} 
-                    getLastMessage={getLastMessage}
-                    user={user}
+                    return <ChatListItem
+                        userObj={userObj}
+                        setCurrentChatUser={setCurrentChatUser}
+                        currentChatUser={currentChatUser}
+                        getLastMessage={getLastMessage}
+                        user={user}
                     />
                 })
 
@@ -71,15 +66,24 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
 
                         <div className='chatListItem'>
                             <Skeleton animation="wave" variant="circular" width={40} height={40} style={{ marginTop: 6 }} />
-                            <div className='chatListItem__name'>
+                            <div>
+                                <div className='chatListItem__name'>
 
-                                <Skeleton
-                                    animation="wave"
-                                    height={20}
-                                    width={150}
-                                />
+                                    <Skeleton
+                                        animation="wave"
+                                        height={20}
+                                        width={200}
+                                    />
+
+                                </div>
+                                <div className='chatListItem__preview'>
+                                    <Skeleton
+                                        animation="wave"
+                                        height={20}
+                                        width={150}
+                                    />
+                                </div>
                             </div>
-
                         </div>
                     ))
                 }
@@ -91,14 +95,4 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
 
 export default ChatList
 
-// function ChatListItem(userObj, setCurrentChatUser, currentChatUser, getLastMessage) {
-//     return <button className='styleless__button' key={userObj.id} onClick={e => setCurrentChatUser({ email: userObj.email, photoURL: userObj.photoURL, displayName: userObj.displayName })}>
-//         <div className={userObj.email === currentChatUser.email ? 'chatListItem currentChatUser' : 'chatListItem'}>
-//             <Avatar alt={userObj.displayName} src={userObj.photoURL} />
-//             <div>
-//                 <div className='chatListItem__name'>{userObj.displayName}</div>
-//                 <div className='chatListItem__preview'>{getLastMessage(userObj)}</div>
-//             </div>
-//         </div>
-//     </button>;
-// }
+

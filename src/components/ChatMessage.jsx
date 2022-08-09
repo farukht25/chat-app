@@ -6,20 +6,20 @@ import { green } from '@mui/material/colors';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 
-function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editMessage, deleteMessage,currentChatUser }) {
+function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editMessage, deleteMessage, currentChatUser }) {
 
     const formatTime = () => {
-        if(!m.timestamp) return ''
+        if (!m.timestamp) return ''
         let tim = m.timestamp.toDate().toLocaleTimeString()
         let end = tim.slice(-2);
         tim = tim.replace(/:[^:]+$/, "")
         return tim + ' ' + end;
     }
 
-    const readStatus=(m)=>{
-        let seenByArray=m.seenBy;
-        if(seenByArray.includes(user.email) && seenByArray.includes(currentChatUser.email))return 'read'
-        return 'sent'
+    const getReadStatus = (m) => {
+        let seenByArray = m.seenBy;
+        if (seenByArray.includes(user.email) && seenByArray.includes(currentChatUser.email)) return <DoneAllIcon sx={{ fontSize: 15, color: green[500] }} />
+        return <DoneIcon sx={{ fontSize: 15, color: green[500] }} />
     }
 
 
@@ -48,13 +48,13 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
                     deleteMessage={deleteMessage}
                     messageId={m.id}
                     setHoweredOnmessageId={setHoweredOnmessageId} /> :
-                ((readStatus(m)==='read')?<DoneAllIcon sx={{ fontSize: 15,color: green[500] }} />:
-                <DoneIcon sx={{ fontSize: 15,color: green[500] }} />)
-                
+                ((m.from !== user.email) ?
+                    <span className='chat__menu__placeholder'></span> : getReadStatus(m))
+
             }
         </div>
         <span className={m.from === user.email ? "right time" : "left time"}>{formatTime()}</span>
-  
+
 
 
     </>;
