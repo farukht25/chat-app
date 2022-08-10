@@ -22,6 +22,12 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
         return <DoneIcon sx={{ fontSize: 15, color: green[500] }} />
     }
 
+    if(m.imageURL)
+    return(
+        <div>
+            <img src={m.imageURL} alt="image" />
+        </div>
+    )
 
     if (m.isDeleted) return (
         <div

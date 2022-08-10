@@ -7,7 +7,8 @@ import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
 import ChatMessage from './ChatMessage';
 import ChatHeader from './ChatHeader';
-
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ImagePreview from './ImagePreview';
 
 function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const [messages, setMessages] = useState([]);
@@ -15,6 +16,9 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const [howeredOnmessageId, setHoweredOnmessageId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [scroll, setScroll] = useState(true);
+    const [image, setImage] = useState(null);
+    const [showImagePreview, setShowImagePreview] = useState(false);
+    const [uploadedImageURL, setUploadedImageURL] = useState('');
     const dummy = useRef();
 
     useEffect(() => {
@@ -51,23 +55,23 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
         }
     }, [messages])
 
-    const  setReadReceits=()=>{
-        const unreadReceitMessages=messages.filter(message=>{
-            if((message.seenBy).includes(user.email))return false;
+    const setReadReceits = () => {
+        const unreadReceitMessages = messages.filter(message => {
+            if ((message.seenBy).includes(user.email)) return false;
             else return true
         })
-        let promiseArray=[]
-        try{
-        unreadReceitMessages.forEach(message=>{
-            const newSeenArray=[...message.seenBy,user.email];
-            promiseArray.push(updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, message.copyId), { seenBy: newSeenArray }))
-            promiseArray.push(updateDoc(doc(db, `chats/${user.email}/messages`, message.id), { seenBy: newSeenArray })) 
-        })
-        Promise.all(promiseArray)
-    }
-    catch(err){
-        console.log(err)
-    }
+        let promiseArray = []
+        try {
+            unreadReceitMessages.forEach(message => {
+                const newSeenArray = [...message.seenBy, user.email];
+                promiseArray.push(updateDoc(doc(db, `chats/${currentChatUser.email}/messages`, message.copyId), { seenBy: newSeenArray }))
+                promiseArray.push(updateDoc(doc(db, `chats/${user.email}/messages`, message.id), { seenBy: newSeenArray }))
+            })
+            Promise.all(promiseArray)
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
 
 
@@ -127,10 +131,11 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
     const sendMessage = async (e) => {
         e.preventDefault();
         const messageLocal = message
+        console.log('messageLocal'+messageLocal+'message'+message)
         setMessage('');
         try {
-            if (messageLocal) {
-
+            if (true) {
+                console.log('still here?'+uploadedImageURL)
                 const [senderCopy, receiverCopy] = await Promise.all([
                     addDoc(collection(db, `chats/${user.email}/messages`), {
                         to: currentChatUser.email,
@@ -139,7 +144,8 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         text: messageLocal,
                         isDeleted: false,
                         isEdited: false,
-                        seenBy: [user.email]
+                        seenBy: [user.email],
+                        imageURL:uploadedImageURL
 
                     }),
                     addDoc(collection(db, `chats/${currentChatUser.email}/messages`), {
@@ -149,11 +155,13 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         text: messageLocal,
                         isDeleted: false,
                         isEdited: false,
-                        seenBy: [user.email]
+                        seenBy: [user.email],
+                        imageURL:uploadedImageURL
                     })])
 
                 copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3], messageLocal)
                 setScroll(true)
+                setUploadedImageURL('')
 
             }
         }
@@ -176,10 +184,31 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
             ('000' + messageTimestamp.getFullYear()).slice(-4);
     }
 
-    
+    const handleUpload = (e) => {
+        e.preventDefault()
+        if (e.target.files[0]) {
+            setImage(e.target.files[0])
+            setShowImagePreview(true)
+        }
+    }
+
+    if (showImagePreview){
+        return <ImagePreview 
+        setShowImagePreview={setShowImagePreview} 
+        setImage={setImage} 
+        setUploadedImageURL={setUploadedImageURL}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+        message={message}
+        uploadedImageURL={uploadedImageURL}
+        image={image}/>
+    }
+        
 
 
-    return ((user && Object.keys(user).length !== 0 && currentChatUser.email) ? (
+
+    return ((currentChatUser.email) ? (
+
         <>
             <ChatHeader currentChatUser={currentChatUser} width={width} toggle={toggle} currentChatVisible={currentChatVisible} />
             <div className="chat__messages">
@@ -205,13 +234,13 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
 
                             return (<>{insertDate && (<div className='message__date'>{m.messageDate}</div>)}
-                                <ChatMessage m={m} 
+                                <ChatMessage m={m}
                                     user={user}
                                     key={m.id}
                                     currentChatUser={currentChatUser}
                                     setHoweredOnmessageId={setHoweredOnmessageId}
-                                    howeredOnmessageId={howeredOnmessageId} 
-                                    editMessage={editMessage} 
+                                    howeredOnmessageId={howeredOnmessageId}
+                                    editMessage={editMessage}
                                     deleteMessage={deleteMessage} /></>)
 
                         }))
@@ -223,14 +252,18 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
                     <div className='chat__form_input'>
 
+                        <label htmlFor='img-upload'><AttachFileIcon /></label>
+                        <input className='chat__form_file__upload' id="img-upload" variant="filled" onChange={e => handleUpload(e)} type='file' accept='image/*' />
                         <input placeholder='Enter Message...' type='text' value={message} onChange={e => setMessage(e.target.value)} />
                     </div>
                     <div className='chat__form__button'>
-                        <Button type='submit' variant="dark" endIcon={<SendRoundedIcon color="dark" fontSize="large" />}>
+                        <Button type='submit' disabled={!message} variant="dark" endIcon={<SendRoundedIcon color="dark" fontSize="large" />}>
                             Send
                         </Button>
-                        
+
+
                     </div>
+
 
 
                 </div>
