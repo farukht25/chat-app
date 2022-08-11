@@ -58,7 +58,7 @@ export default function FormDialog({ message, editMessage, handleMenuClose }) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} type='cancel'>Cancel</Button>
-                        <Button type='submit'>Update</Button>
+                        <Button type='submit' disabled={!newMessage}>Update</Button>
                     </DialogActions>
                 </form>
             </Dialog>

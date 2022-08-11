@@ -131,7 +131,7 @@
   background-color: #43474b;
 }
 
-.chat__form_input input {
+.chat__form_input input,.imagePreview__image__input input {
   height: 70%;
   width: 90%;
   border-radius: 8px;
@@ -140,7 +140,7 @@
   color: white;
   font-size: 1.5em;
 }
-.chat__form_input input:focus {
+.chat__form_input input:focus,.imagePreview__image__input input:focus {
   outline: none;
 }
 
@@ -279,7 +279,9 @@
   display: none;
 }
 
-.imagePreview__image{
+
+
+.imagePreview__image ,.chatMessage__image {
   object-fit: contain;
   max-width: 400px;
   max-height: 400px;
@@ -290,7 +292,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  margin-top: 5%;
   margin-bottom: 5%;
 }
 
@@ -298,4 +299,44 @@
   width: 400px;
   margin: auto;
   margin-bottom: 20px;
+}
+
+.chatMessage__image__container{
+display: flex;
+flex-direction: column;
+}
+
+.chatMessage__image__text{
+  max-width: 400px;
+ 
+}
+
+.imagePreview__image__input {
+  max-width: 400px;
+ margin: auto;
+ margin-bottom: 20px;
+  /* background-color: #43474b; */
+  
+}
+
+.imagePreview__image__input input {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #43474b;
+  background-color: #43474b;
+  color: white;
+  padding: 2%;
+}
+
+.chatMessage__image__textAndReadReceit{
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.chatMessage__image__ReadReceit{
+display: flex;
+align-items: flex-end;
+
 }

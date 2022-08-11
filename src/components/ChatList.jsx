@@ -62,9 +62,9 @@ function ChatList({ setCurrentChatUser, currentChatUser }) {
             </>) : (
             <>
                 {
-                    [1, 1, 1, 1, 1, 1].map(el => (
+                    [1, 2, 3, 4, 5, 6].map(el => (
 
-                        <div className='chatListItem'>
+                        <div key={el} className='chatListItem'>
                             <Skeleton animation="wave" variant="circular" width={40} height={40} style={{ marginTop: 6 }} />
                             <div>
                                 <div className='chatListItem__name'>

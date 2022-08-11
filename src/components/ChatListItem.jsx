@@ -26,7 +26,7 @@ function ChatListItem({ userObj, setCurrentChatUser, currentChatUser, getLastMes
 
     return (
         <button className='stylelessButton' key={userObj.id} onClick={e => setCurrentChatUser({ email: userObj.email, photoURL: userObj.photoURL, displayName: userObj.displayName })}>
-            <div className={userObj.email === currentChatUser.email ? 'chatListItem currentChatUser' : 'chatListItem'}>
+            <div  className={userObj.email === currentChatUser.email ? 'chatListItem currentChatUser' : 'chatListItem'}>
                 <Avatar alt={userObj.displayName} src={userObj.photoURL} />
                 <div>
                     <div className='chatListItem__name'>{userObj.displayName} </div>

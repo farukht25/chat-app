@@ -4,31 +4,32 @@ import { storage } from '../firebase';
 import CloseIcon from '@mui/icons-material/Close';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import { red } from '@mui/material/colors';
 import LinearProgress from '@mui/material/LinearProgress';
 
-function ImagePreview({ setShowImagePreview, setImage, image, setUploadedImageURL, setMessage, sendMessage, message ,uploadedImageURL }) {
+function ImagePreview({ setShowImagePreview, setImage, image, setUploadedImageURL, sendMessage, uploadedImageURL }) {
 
-    const [progress, setProgress] = useState(0)
-    const [fart, setFart] = useState('')
+    const [progress, setProgress] = useState(0);
+    const [caption, setCaption] = useState('');
 
-    useEffect(()=>{
-        if(progress === 100)
-        setShowImagePreview(false)
-    },[progress])
+    useEffect(() => {
+        if (progress === 100)
+            setShowImagePreview(false)
+    }, [progress])
 
     const handleClosePreview = (e) => {
         e.preventDefault();
-        setShowImagePreview(false);
         setImage(null);
+        setCaption('')
+        setShowImagePreview(false);
+        
     }
 
 
 
-    const handleMessageSend = (e) => {
+    const handleMessageSend = async (e) => {
         e.preventDefault();
-        let url=''
+
         if (!image) {
             setShowImagePreview(false);
             return
@@ -47,17 +48,14 @@ function ImagePreview({ setShowImagePreview, setImage, image, setUploadedImageUR
             (error) => console.log(error),
             () => {
                 getDownloadURL(uploadTask.snapshot.ref)
-                .then((downloadURL) => {
-                    if(!fart)setFart(downloadURL)
-                    if(!url)url=downloadURL
-                    if(!uploadedImageURL)setUploadedImageURL(prev=>downloadURL)
-                    console.log("in state"+ uploadedImageURL+'just received'+downloadURL+'fart'+fart+'url'+url);
-                    sendMessage(e)
-                });
+                    .then((downloadURL) => {
+                        sendMessage(e, downloadURL, caption)
+                    });
             }
-        );
-        console.log("in state"+ uploadedImageURL+'fart'+fart);
-        
+
+        )
+
+
     };
 
     return (
@@ -68,25 +66,26 @@ function ImagePreview({ setShowImagePreview, setImage, image, setUploadedImageUR
                     src={URL.createObjectURL(image)}
                     alt="preview"
                 />
-                
-            </div>
-            <div className='imagePreview__image__progress'>
-            <LinearProgress variant="determinate" value={progress} style={{width:'100%'}}/>
-            </div>
-            
-            
-            <div className='chat__form__button'>
-                <Button onClick={e => { handleMessageSend(e) }}
-                    type='submit'
-                    variant="dark"
-                    endIcon={<SendRoundedIcon color="dark" fontSize="large" />}
-                >
-                    Send
-                </Button>
-                
-
 
             </div>
+            {(progress !== 0) && <div className='imagePreview__image__progress'>
+                <LinearProgress variant="determinate" value={progress} style={{ width: '100%' }} />
+            </div>}
+            <form onSubmit={e => { handleMessageSend(e) }}>
+                <div className='imagePreview__image__input'>
+                    <input placeholder='Add Caption' type='text' value={caption} onChange={e => setCaption(e.target.value)} />
+                </div>
+                <div className='chat__form__button'>
+                    <Button 
+                        type='submit'
+                        variant="dark"
+                        disabled={progress>0 || !caption}
+                        endIcon={<SendRoundedIcon color="dark" fontSize="large" />}
+                    >
+                        Send
+                    </Button>
+                </div>
+            </form>
         </div>
     )
 }

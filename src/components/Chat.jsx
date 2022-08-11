@@ -128,14 +128,13 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
         }
     }
 
-    const sendMessage = async (e) => {
+    const sendMessage = async (e,downloadURL,imageText) => {
         e.preventDefault();
-        const messageLocal = message
-        console.log('messageLocal'+messageLocal+'message'+message)
+        let messageLocal = message
+        if(imageText) messageLocal=imageText
         setMessage('');
         try {
             if (true) {
-                console.log('still here?'+uploadedImageURL)
                 const [senderCopy, receiverCopy] = await Promise.all([
                     addDoc(collection(db, `chats/${user.email}/messages`), {
                         to: currentChatUser.email,
@@ -145,7 +144,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         isDeleted: false,
                         isEdited: false,
                         seenBy: [user.email],
-                        imageURL:uploadedImageURL
+                        imageURL:downloadURL
 
                     }),
                     addDoc(collection(db, `chats/${currentChatUser.email}/messages`), {
@@ -156,7 +155,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                         isDeleted: false,
                         isEdited: false,
                         seenBy: [user.email],
-                        imageURL:uploadedImageURL
+                        imageURL:downloadURL
                     })])
 
                 copyReference(receiverCopy._key.path.segments[3], senderCopy._key.path.segments[3], messageLocal)
@@ -216,9 +215,11 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                 {
                     (loading) ? (
                         <>
-                            {[1, 2, 1, 2].map(el => (
-                                <div className={el === 1 ? 'left' : 'right'}>
-                                    <Skeleton animation="wave" variant="text" width={100} height={70} />
+                            {[1, 2, 3, 4].map(el => (
+                                <div key={el} className={(el%2 === 0) ? 'left' : 'right'}>
+                                    
+                                    <Skeleton animation="wave" variant="text" width={300} height={70} />
+                                    <Skeleton  animation="wave" variant="text" width={100} height={70} />
                                 </div>
                             ))}
                         </>
@@ -241,13 +242,14 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                                     setHoweredOnmessageId={setHoweredOnmessageId}
                                     howeredOnmessageId={howeredOnmessageId}
                                     editMessage={editMessage}
+                                    dummy={dummy}
                                     deleteMessage={deleteMessage} /></>)
 
                         }))
                 }
                 <span ref={dummy}></span>
             </div>
-            <form type='submit' onSubmit={e => sendMessage(e)}>
+            <form type='submit' onSubmit={e => sendMessage(e,'','')}>
                 <div className='chat__form'>
 
                     <div className='chat__form_input'>
