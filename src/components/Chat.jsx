@@ -35,6 +35,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                     setMessages(newMessages)
                     setScroll(true)
                 })
+                setShowImagePreview(false)
                 setLoading(false)
 
 
@@ -215,7 +216,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
                 {
                     (loading) ? (
                         <>
-                            {[1, 2, 3, 4].map(el => (
+                            {[1, 2, 1, 2].map(el => (
                                 <div key={el} className={(el%2 === 0) ? 'left' : 'right'}>
                                     
                                     <Skeleton animation="wave" variant="text" width={300} height={70} />

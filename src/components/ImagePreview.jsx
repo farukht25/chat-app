@@ -59,7 +59,7 @@ function ImagePreview({ setShowImagePreview, setImage, image, setUploadedImageUR
     };
 
     return (
-        <div>
+        <div className='imagePreview'>
             <button className='stylelessButton' onClick={e => handleClosePreview(e)}><CloseIcon sx={{ color: red[500] }} /></button>
             <div className='imagePreview__image__container'>
                 <img className='imagePreview__image'
