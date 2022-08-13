@@ -28,7 +28,7 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
     if (m.isDeleted) return (
         <div
             key={m.id}
-            className={m.from === user.email ? "from-me deleted" : "from-them deleted"}>
+            className={m.from === user.email ? "from-me deleted " : "from-them deleted"}>
             <DoNotDisturbAltIcon sx={{ fontSize: 15 }} />
             Message Deleted
         </div>)
@@ -65,14 +65,14 @@ function ChatMessage({ m, user, setHoweredOnmessageId, howeredOnmessageId, editM
             </>
         )
 
-    
+
 
     return <>
         {m.isEdited && <span className={m.from === user.email ? "right" : " left"}>edited</span>}
         <div key={m.id}
             onMouseEnter={() => setHoweredOnmessageId(m.id)}
             onMouseLeave={() => setHoweredOnmessageId(null)}
-            className={m.from === user.email ? "from-me" : "from-them"}>
+            className={m.from === user.email ? "from-me " : "from-them "}>
             <span>{m.text}</span>
 
             {(m.id === howeredOnmessageId) ?

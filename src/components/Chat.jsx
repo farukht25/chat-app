@@ -210,7 +210,7 @@ function Chat({ user, currentChatUser, width, toggle, currentChatVisible }) {
 
         <>
             <ChatHeader currentChatUser={currentChatUser} width={width} toggle={toggle} currentChatVisible={currentChatVisible} />
-            <div className="chat__messages">
+            <div className="message_container">
 
                 {
                     (loading) ? (

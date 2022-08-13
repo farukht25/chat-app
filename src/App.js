@@ -47,12 +47,12 @@ function App() {
 
   return (
     <div className="App">
-      <Header/>
+      <Header className='header_container'/>
       <div className='container'>
         {user ?
           <>
             {chatListVisible && <div className="chatList"><ChatList setCurrentChatUser={setCurrentChatUser} currentChatUser={currentChatUser} /></div>}
-            {currentChatVisible && <div className="currentChat"><Chat user={user} currentChatUser={currentChatUser}
+            {currentChatVisible && <div className="currentChat"><Chat className='chat__messages' user={user} currentChatUser={currentChatUser}
             width={width}
             toggle={toggle}
             currentChatVisible={currentChatVisible} 
