@@ -15,7 +15,11 @@ A real-time chat application featuring secure Google Authentication, responsive 
 - JavaScript, CSS
 
 ## 📷 Screenshots
-*Add screenshots of your login screen, chat interface, and mobile view here.*
+![login-preview png](https://github.com/user-attachments/assets/70cfce17-c8f1-4767-87b5-5d4d49328816)
+![chat-ui png](https://github.com/user-attachments/assets/34c68b19-56fa-404f-b35a-fd4dfb14d8cb)
+![mobile-view](https://github.com/user-attachments/assets/dbc256f0-7ae2-44fa-86ce-d85a70813431)
+
+
 
 ## 📁 Setup
 Clone this repo, run `npm install`, then `npm start`. Make sure to add your Firebase config.
